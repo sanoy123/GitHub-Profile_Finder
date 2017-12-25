@@ -1,0 +1,77 @@
+<html>
+
+<head>
+    <title>GitHub Profile Finder</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <style>
+        img {
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="text-center">
+            GitHub Profile Finder
+        </h1>
+        <form id='userSearch'>
+            <div class="form-group">
+                <label for="exampleInputEmail1">GitHub Username</label>
+                <input type="username" class="form-control" id="username" placeholder="Username">
+            </div>
+        </form>
+        <div id="profile"></div>
+</body>
+
+<script>
+    function getProfile(e) {
+        e.preventDefault();
+        var username = document.getElementById('username').value;
+        if (!username || username == '') {
+            username = 'sanoy123';
+        }
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (xhttp.readyState == 4 && xhttp.status == 200) {
+                var user = JSON.parse(xhttp.responseText);
+                document.getElementById('profile').innerHTML = `
+               
+                
+                <div class="panel panel-default">
+                                                    <div class="panel-heading">
+                                                        <h3 class="panel-title">` + user.name + `</h3>
+                                                    </div>
+                                                    <div class="panel-body">
+                                                        <div class="col-md-3">
+                                                          <img src="${user.avatar_url}">
+                                                        </div>
+                                                        <div class="col-md-9">
+                                                                <button class="btn btn-primary" type="button">
+                                                            Public Repository <span class="badge">${user.public_repos}</span>
+                                                            </button>
+                                                            <button class="btn btn-primary" type="button">
+                                                           Followers <span class="badge">${user.followers}</span>
+                                                            </button><br>
+                                                            <ul class="list-group">
+                                                               
+                                                                <li class="list-group-item">Location: ${user.location}</li>
+                                                                <li class="list-group-item">Created: ${user.created_at}</li>
+                                                                <li class="list-group-item">Last Updated: ${user.updated_at}</li>
+
+                                                            </ul>
+                                                            
+                                                            <a href="${user.html_url}" target="_blank"><btn class="btn btn-default">Go to GitHub Profile</btn></a>
+                                                        </div>
+                                                    </div>
+                                                    </div>`;
+            }
+        }
+        xhttp.open('GET', 'https://api.github.com/users/' + username, true);
+        xhttp.send();
+    }
+
+    document.getElementById('userSearch').addEventListener('submit', getProfile, false);
+</script>
+
+</html>
